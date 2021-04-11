@@ -1,0 +1,26 @@
+#: locale=en
+
+## Tour
+
+### Description
+
+### Title
+tour.name = Recorrido Alerce
+
+## Media
+
+### Title
+map_BC9E2829_B5DE_7A8F_41D1_D328A7EB2951.label = Planta_Alerce(AltaCalidad)
+panorama_8528CE15_8C41_ADA9_41C8_6560E34B141E.label = Alerce360_0004(Web)
+panorama_852B1326_8C41_FBE8_41B1_35F58E415E2B.label = Alerce360_0007(Web)
+panorama_852B26D8_8C41_BA58_41DF_3D6BE157964F.label = Alerce360_0003(Web)
+panorama_852B4C6A_8C41_EE78_41D5_EB31854B4112.label = Alerce360_0006(Web)
+panorama_852B74D2_8C41_DEAB_417B_904CD1F9272B.label = Alerce360_0005(Web)
+panorama_85321014_8C41_B5A8_41A0_B4865802D02C.label = Alerce360_0002(Web)
+panorama_86EA353E_8C41_5FD8_41C9_45F27E904F8D.label = Alerce360_0001(Web)
+
+## Action
+
+### URL
+LinkBehaviour_82C3AA22_8C40_F5E8_41D1_2C809BAD7DC0.source = https://umbra3d.studio/
+LinkBehaviour_BB810049_B5CC_C7F6_41E1_0C3129EB8258.source = https://umbra3d.studio/

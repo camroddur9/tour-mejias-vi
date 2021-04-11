@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Recorrido Alerce</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" id="metaViewport" content="user-scalable=no, initial-scale=1, width=device-width, viewport-fit=cover" data-tdv-general-scale="0.5"/>
+    <link rel="preload" href="locale/en.txt?v=1613664312919" as="fetch" crossorigin="anonymous"/>
+	<link rel="preload" href="script.js?v=1613664312919" as="script"/>
+	<link rel="preload" href="media/panorama_85321014_8C41_B5A8_41A0_B4865802D02C_0/r/2/0_0.jpg?v=1613664312919" as="image"/>
+	<link rel="preload" href="media/panorama_85321014_8C41_B5A8_41A0_B4865802D02C_0/l/2/0_0.jpg?v=1613664312919" as="image"/>
+	<link rel="preload" href="media/panorama_85321014_8C41_B5A8_41A0_B4865802D02C_0/u/2/0_0.jpg?v=1613664312919" as="image"/>
+	<link rel="preload" href="media/panorama_85321014_8C41_B5A8_41A0_B4865802D02C_0/d/2/0_0.jpg?v=1613664312919" as="image"/>
+	<link rel="preload" href="media/panorama_85321014_8C41_B5A8_41A0_B4865802D02C_0/f/2/0_0.jpg?v=1613664312919" as="image"/>
+	<link rel="preload" href="media/panorama_85321014_8C41_B5A8_41A0_B4865802D02C_0/b/2/0_0.jpg?v=1613664312919" as="image"/>
+	<meta name="description" content="Virtual Tour"/>
+    <link rel="stylesheet" href="./style.css">
+	<meta name="theme-color" content="#FFFFFF"/>
+    <script src="lib/tdvplayer.js?v=1613664312919"></script>
+    <script src="script.js?v=1613664312919"></script>
+    <script type="text/javascript">
+        (function()
+        {
+            var deviceType = TDV.PlayerAPI.mobile ? 'mobile' : 'general';
+            var devicesUrl = {"general":"script_general.js?v=1613664312919","mobile":{"landscape":"script_general.js?v=1613664312919","portrait":"script_mobile.js?v=1613664312919"}};
+            var url = deviceType in devicesUrl ? devicesUrl[deviceType] : devicesUrl['general'];
+            if(typeof url == "object") {
+                var orient = TDV.PlayerAPI.getOrientation();
+                if(orient in url) {
+                    url = url[orient];
+                }
+            }
+            var link = document.createElement('link');
+            link.rel = 'preload';
+            link.href = url;
+            link.as = 'script';
+            var el = document.getElementsByTagName('script')[0];
+            el.parentNode.insertBefore(link, el);
+        })();
+    </script>
+    <script type="text/javascript">
+        var tour;
+
+        function loadTour()
+        {
+            if(tour) return;
+
+            var settings = new TDV.PlayerSettings();
+            settings.set(TDV.PlayerSettings.CONTAINER, document.getElementById('viewer'));
+            settings.set(TDV.PlayerSettings.WEBVR_POLYFILL_URL, 'lib/WebVRPolyfill.js?v=1613664312919');
+            settings.set(TDV.PlayerSettings.HLS_URL, 'lib/Hls.js?v=1613664312919');
+            settings.set(TDV.PlayerSettings.QUERY_STRING_PARAMETERS, 'v=1613664312919');
+
+            var devicesUrl = {"general":"script_general.js?v=1613664312919","mobile":{"landscape":"script_general.js?v=1613664312919","portrait":"script_mobile.js?v=1613664312919"}};
+
+            tour = new TDV.Tour(settings, devicesUrl);
+            tour.bind(TDV.Tour.EVENT_TOUR_INITIALIZED, onVirtualTourInit);
+            tour.bind(TDV.Tour.EVENT_TOUR_LOADED, onVirtualTourLoaded);
+            tour.bind(TDV.Tour.EVENT_TOUR_ENDED, onVirtualTourEnded);
+            tour.load();
+        }
+
+        function pauseTour()
+        {
+            if(!tour)
+                return;
+
+            tour.pause();
+        }
+
+        function resumeTour()
+        {
+            if(!tour)
+                return;
+
+            tour.resume();
+        }
+
+        function onVirtualTourInit()
+        {
+            var updateTexts = function() {
+                document.title = this.trans("tour.name")
+            };
+
+            tour.locManager.bind(TDV.Tour.LocaleManager.EVENT_LOCALE_CHANGED, updateTexts.bind(tour.locManager));
+            
+        }
+
+        function onVirtualTourLoaded()
+        {
+            disposePreloader();
+        }
+
+        function onVirtualTourEnded()
+        {
+
+        }
+
+        function setMediaByIndex(index)
+        {
+            if(!tour)
+                return;
+
+            tour.setMediaByIndex(index);
+        }
+
+        function setMediaByName(name)
+        {
+            if(!tour)
+                return;
+
+            tour.setMediaByName(name);
+        }
+
+        function showPreloader()
+        {
+            var preloadContainer = document.getElementById('preloadContainer');
+            if(preloadContainer != undefined)
+                preloadContainer.style.opacity = 1;
+        }
+
+        function disposePreloader()
+        {
+            var preloadContainer = document.getElementById('preloadContainer');
+            if(preloadContainer == undefined)
+                return;
+
+            var transitionEndName = transitionEndEventName();
+            if(transitionEndName)
+            {
+                preloadContainer.addEventListener(transitionEndName, hide, false);
+                preloadContainer.style.opacity = 0;
+                setTimeout(hide, 500); //Force hide. Some cases the transitionend event isn't dispatched with an iFrame.
+            }
+            else
+            {
+                hide();
+            }
+
+            function hide()
+            {
+                
+                preloadContainer.style.visibility = 'hidden';
+                preloadContainer.style.display = 'none';
+                var videoList = preloadContainer.getElementsByTagName("video");
+                for(var i=0; i<videoList.length; ++i)
+                {
+                    var video = videoList[i];
+                    video.pause();
+                    while (video.children.length)
+                        video.removeChild(video.children[0]);
+                }
+            }
+
+            function transitionEndEventName () {
+                var el = document.createElement('div');
+                var transitions = {
+                        'transition':'transitionend',
+                        'OTransition':'otransitionend',
+                        'MozTransition':'transitionend',
+                        'WebkitTransition':'webkitTransitionEnd'
+                    };
+
+                var t;
+                for (t in transitions) {
+                    if (el.style[t] !== undefined) {
+                        return transitions[t];
+                    }
+                }
+
+                return undefined;
+            }
+        }
+
+        function onBodyClick(){
+            document.body.removeEventListener("click", onBodyClick);
+            document.body.removeEventListener("touchend", onBodyClick);
+            loadTour();
+        }
+
+        function onLoad() {
+            if (/AppleWebKit/.test(navigator.userAgent) && /Mobile\/\w+/.test(navigator.userAgent))
+            {
+                var inIFrame = false;
+                try
+                {
+                    inIFrame = (window.self !== window.top);
+                }
+                catch (e)
+                {
+                    inIFrame = true;
+                }
+                if (!inIFrame)
+                {
+                    var onResize = function(async)
+                    {
+                        [0, 250, 1000, 2000].forEach(function(delay)
+                        {
+                            setTimeout(function()
+                            {
+                                var viewer = document.querySelector('#viewer');
+                                var scale = window.innerWidth / document.documentElement.clientWidth;
+                                var width = document.documentElement.clientWidth;
+                                var height = Math.round(window.innerHeight / scale);
+                                viewer.style.width = width + 'px';
+                                viewer.style.height = height + 'px';
+                                viewer.style.left = Math.round((window.innerWidth - width) * 0.5) + 'px';
+                                viewer.style.top = Math.round((window.innerHeight - height) * 0.5) + 'px';
+                                viewer.style.transform = 'scale(' + scale + ', ' + scale + ')';
+                                window.scrollTo(0,0);
+                            }, delay);
+                        });
+                    };
+                    var onTouchEnd = function()
+                    {
+                        document.body.removeEventListener("touchend", onTouchEnd);
+                        clearInterval(resizeIntervalId);
+                        onResize();
+                        if (/CriOS/.test(navigator.userAgent))
+                            setInterval(onResize, 4000);
+                    };
+                    document.body.addEventListener("touchend", onTouchEnd);
+                    var resizeIntervalId = setInterval(onResize, 300);
+                    window.addEventListener('resize', onResize);
+                    onResize();
+                }
+            }
+
+            var params = getParams(location.search.substr(1));
+            if(params.hasOwnProperty("skip-loading"))
+            {
+                loadTour();
+                disposePreloader();
+                return;
+            }
+
+            if (isOVRWeb()){
+                showPreloader();
+                loadTour();
+                return;
+            }
+
+            document.body.addEventListener("click", onBodyClick);
+			document.body.addEventListener("touchend", onBodyClick);
+			showPreloader();
+        }
+
+        function playVideo(video) {
+            function isSafariDesktopV11orGreater() {
+                return /^((?!chrome|android|crios|ipad|iphone).)*safari/i.test(navigator.userAgent) && parseFloat(/Version\/([0-9]+\.[0-9]+)/i.exec(navigator.userAgent)[1]) >= 11;
+            }
+
+            function hasAudio (video) {
+                return video.mozHasAudio ||
+                       Boolean(video.webkitAudioDecodedByteCount) ||
+                       Boolean(video.audioTracks && video.audioTracks.length);
+            }
+
+            function detectUserAction() {
+                var onVideoClick = function(e) {
+                    if(video.paused) {
+                        video.play();
+                    }
+                    video.muted = false;
+                    if(hasAudio(video))
+                    {
+                        e.stopPropagation();
+                        e.stopImmediatePropagation();
+                        e.preventDefault();
+                    }
+
+                    video.removeEventListener('click', onVideoClick);
+                    video.removeEventListener('touchend', onVideoClick);
+                };
+                video.addEventListener("click", onVideoClick);
+                video.addEventListener("touchend", onVideoClick);
+            }
+
+            if (isSafariDesktopV11orGreater()) {
+                video.muted = true;
+                video.play();
+            } else {
+                var canPlay = true;
+                var promise = video.play();
+                if (promise) {
+                    promise.catch(function() {
+                        video.muted = true;
+                        video.play();
+                        detectUserAction();
+                    });
+                } else {
+                    canPlay = false;
+                }
+
+                if (!canPlay || video.muted) {
+                    detectUserAction();
+                }
+            }
+        }
+
+        function isOVRWeb(){
+            return window.location.hash.substring(1).split('&').indexOf('ovrweb') > -1;
+        }
+
+        function getParams(params) {
+            var queryDict = {}; params.split("&").forEach(function(item) {var k = item.split("=")[0], v = decodeURIComponent(item.split("=")[1]);queryDict[k.toLowerCase()] = v});
+            return queryDict;
+        }
+
+        document.addEventListener('DOMContentLoaded', onLoad);
+    </script>
+    <style type="text/css">
+        html, body { width: 100%; height: 100%; margin: 0; padding: 0; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+
+        #viewer { z-index:1; position:absolute; width: 100%; height: 100%; top: 0; }
+        #preloadContainer { z-index:2; position:relative; width:100%; height:100%; opacity:0; background-color:rgba(255,255,255,1); transition: opacity 0.5s; -webkit-transition: opacity 0.5s; -moz-transition: opacity 0.5s; -o-transition: opacity 0.5s;}
+    </style>
+    <link rel="stylesheet" href="fonts.css?v=1613664312919">
+</head>
+<body>
+    <div id="preloadContainer"><div style="z-index: 4; position: absolute; background-image: url('loading/HTMLImage_9B5FAC26_8D80_A36F_41DD_CD83A76A1D18.jpg'); background-size: cover; background-repeat: no-repeat; background-position: center center; overflow: hidden; right: 0%; bottom: 0%; width: 100.00%; height: 100.00%"></div><div style="z-index: 5; position: absolute; background-image: url('loading/HTMLImage_9A7A8560_8D81_ADE4_41DF_29D494E03884.png'); background-size: contain; background-repeat: no-repeat; background-position: left center; overflow: hidden; right: 78.75%; bottom: 30.61%; width: 13.37%; height: 16.09%"></div><div style="z-index: 6; position: absolute; background-image: url('loading/HTMLImage_989C88FD_8D80_E4DD_41D0_EF42E9C29371.png'); background-size: contain; background-repeat: no-repeat; background-position: center center; overflow: hidden; right: 43.77%; bottom: 32.96%; width: 11.85%; height: 14.41%"></div><div style="z-index: 7; position: absolute; background-image: url('loading/HTMLImage_98DAE47F_8D8F_E3DC_41BF_F747908775B3.png'); background-size: contain; background-repeat: no-repeat; background-position: right center; overflow: hidden; left: 78.8%; bottom: 32.18%; width: 12.52%; height: 15.08%"></div><div style="z-index: 8; position: absolute; background-image: url('loading/HTMLImage_9A531EAC_8D80_5F7C_41DE_6A99C70B3B17.png'); background-size: contain; background-repeat: no-repeat; background-position: center center; overflow: hidden; right: 0%; bottom: 17.21%; width: 100.00%; height: 5.47%"></div><div style="z-index: 9; position: absolute; background-image: url('loading/HTMLImage_A1F99321_B583_2F8B_41D0_87671E8DCED6.png'); background-size: contain; background-repeat: no-repeat; background-position: center center; overflow: hidden; right: 0%; top: 5.14%; width: 100.00%; height: 9.39%"></div><div style="z-index: 10; position: absolute; background-image: url('loading/HTMLImage_A73B993E_B583_3BF9_41E1_2B4F66906C50.png'); background-size: contain; background-repeat: no-repeat; background-position: center center; overflow: hidden; right: 0%; top: 21.08%; width: 100.00%; height: 12.18%"></div><div style="z-index: 11; position: absolute; right: 0%; top: 40.67%; width: 100.00%; height: 6.59%"><div style="text-align:left; color:#000; "><DIV STYLE="text-align:center;font-size:3.128491620111731vmin;"><SPAN STYLE="display:inline-block; letter-spacing:0vmin; white-space:pre-wrap;color:#000000;font-family:Arial, Helvetica, sans-serif;"><SPAN STYLE="color:#ffffff;font-size:3.13vmin;font-family:'Montserrat ExtraBold';">Bienvenidos al recorrido virtual...</SPAN></SPAN></DIV></div></div><div style="z-index: 12; position: absolute; left: 0%; bottom: 0%; width: 100.00%; height: 11.40%"><div style="text-align:left; color:#000; "><DIV STYLE="text-align:center;font-size:1.7877094972067031vmin;"><SPAN STYLE="display:inline-block; letter-spacing:0vmin; white-space:pre-wrap;color:#000000;font-size:1.79vmin;font-family:Arial, Helvetica, sans-serif;"><SPAN STYLE="color:#ffffff;font-family:'Montserrat';">La oferta comercial no incluye mobiliario.</SPAN></SPAN></DIV></div></div><div style="z-index: 13; position: absolute; right: 0%; bottom: 0%; width: 100.00%; height: 8.27%"><div style="text-align:left; color:#000; "><DIV STYLE="text-align:center;font-size:1.7877094972067031vmin;"><SPAN STYLE="display:inline-block; letter-spacing:0vmin; white-space:pre-wrap;color:#000000;font-size:1.79vmin;font-family:Arial, Helvetica, sans-serif;"><SPAN STYLE="color:#ffffff;font-family:'Montserrat';">Este material hace referencia a una interpretación de la realidad, BASA CONSTRUCCIONES SAS se reserva el derecho de hacer ajustes en la etapa de construcción.</SPAN></SPAN></DIV></div></div><div style="z-index: 14; position: absolute; right: 0%; bottom: 0%; width: 100.00%; height: 5.03%"><div style="text-align:left; color:#000; "><DIV STYLE="text-align:center;font-size:1.7877094972067031vmin;"><SPAN STYLE="display:inline-block; letter-spacing:0vmin; white-space:pre-wrap;color:#000000;font-size:1.79vmin;font-family:Arial, Helvetica, sans-serif;"><SPAN STYLE="color:#ffffff;font-family:'Montserrat';">La vista exterior es una recreación y no representa la realidad de cada uno de los apartamentos.</SPAN></SPAN></DIV></div></div></div>
+    <div id="viewer"></div>
+</body>
+</html>
